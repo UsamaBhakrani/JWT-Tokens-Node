@@ -1,12 +1,12 @@
-const CustomAPIError = require("../errors/custom-error");
+const { AuthError } = require("../errors/index.js");
 const jwt = require("jsonwebtoken");
 
 const authMiddleWare = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new CustomAPIError("Please Provide proper JWT Token", 401);
+    throw new AuthError("Please Provide proper JWT Token");
   }
-  
+
   const token = authHeader.split(" ")[1];
 
   try {
@@ -14,9 +14,8 @@ const authMiddleWare = async (req, res, next) => {
     const { id, username } = decoded;
     req.user = { id, username };
     next();
-    
   } catch (error) {
-    throw new CustomAPIError("Please Provide proper JWT Token", 401);
+    throw new AuthError("Please Provide proper JWT Token");
   }
 };
 
